@@ -1,0 +1,210 @@
+{
+  "Name": "Scrape TVMAZE",
+  "CreationDate": "2023-11-7",
+  "Commands": [
+    {
+      "Command": "store",
+      "Target": "true",
+      "Value": "!errorignore",
+      "Description": ""
+    },
+    {
+      "Command": "prompt",
+      "Target": "Mau di scrape dari halaman berapa bos :",
+      "Value": "startPage",
+      "Description": ""
+    },
+    {
+      "Command": "prompt",
+      "Target": "Mau di scrape sampai halaman berapa bos :",
+      "Value": "endPage",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number(${startPage});",
+      "Value": "startPage",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number(${endPage});",
+      "Value": "endPage",
+      "Description": ""
+    },
+    {
+      "Command": "label",
+      "Target": "start_loop",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Mengakses halaman ${startPage}",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://www.tvmaze.com/countdown?filter=all&source=country-US&page=${startPage}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "window.scrollBy(0,2000)",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "return document.getElementsByClassName(\"show medium-6 cell\").length;",
+      "Value": "Jumlahtv",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "1",
+      "Value": "tvshows",
+      "Description": ""
+    },
+    {
+      "Command": "while",
+      "Target": "${tvshows} <= ${Jumlahtv}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeText",
+      "Target": "xpath=//*[@id=\"countdown\"]/section/section/div/article[${tvshows}]/div/section/div[1]/a",
+      "Value": "Nama",
+      "Description": ""
+    },
+    {
+      "Command": "storeText",
+      "Target": "xpath=//*[@id=\"countdown\"]/section/section/div/article[${tvshows}]/div/section/div[2]/span",
+      "Value": "SeasonEpisode",
+      "Description": ""
+    },
+    {
+      "Command": "storeText",
+      "Target": "xpath=//*[@id=\"countdown\"]/section/section/div/article[${tvshows}]/div/header/div[2]",
+      "Value": "Header",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "return ${SeasonEpisode}.split(\"x\")[0]",
+      "Value": "Season",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "return ${SeasonEpisode}.split(\"x\")[1].split(\" \")[0]",
+      "Value": "Episode",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var teksArray = ${SeasonEpisode}.split(' '); teksArray.shift(); return teksArray.join(' ');",
+      "Value": "NamaEpisode",
+      "Description": ""
+    },
+    {
+      "Command": "storeImage",
+      "Target": "xpath=//*[@id=\"countdown\"]/section/section/div/article[${tvshows}]/div/figure/a/img",
+      "Value": "${Nama}S${Season}E${Episode}",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "pause // 10000",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "${Nama} Season ${Season} Episode ${Episode}",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "return ${Header}.substring(0, 12);",
+      "Value": "Tanggal",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "${Nama}",
+      "Value": "!csvline",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "${Season}",
+      "Value": "!csvline",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "${Episode}",
+      "Value": "!csvline",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "${NamaEpisode}",
+      "Value": "!csvline",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "${Nama}S${Season}E${Episode}",
+      "Value": "!csvline",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "${Tanggal}",
+      "Value": "!csvline",
+      "Description": ""
+    },
+    {
+      "Command": "csvSave",
+      "Target": "jadwaltvmaze",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number (${tvshows}) + 1;",
+      "Value": "tvshows",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Scrape sudah selesai bos ${startPage}",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number(${startPage}) + 1;",
+      "Value": "startPage",
+      "Description": ""
+    },
+    {
+      "Command": "gotoIf",
+      "Target": "${startPage} <= ${endPage}",
+      "Value": "start_loop",
+      "Description": ""
+    }
+  ]
+}
